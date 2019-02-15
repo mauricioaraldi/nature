@@ -4,17 +4,18 @@ $(function() {
 	MICROBIOS = {};
 	COLORS = ['#FF0000', '#00FF00', '#0000FF', '#000000', '#CCCCCC'];
 	ID = 0;
+	COLONY_ID = 1;
 	MAX_POPULATION = 500;
 	CURRENT_TIME = 0;
-	TICK_RATE = 50;
-	PROCREATION_VARIATORS = ['size', 'movementFrequency', 'movementRange', 'agressiveness', 'attack', 'resistance', 'procreationRate', 'regeneration', 'averageAge'];
+	TICK_RATE = 30;
+	PROCREATION_VARIATORS = ['size', 'movementFrequency', 'movementRange', 'agressiveness', 'attack', 'resistance', 'ownProcreationRate', 'coupleProcreationRate', 'regeneration', 'averageAge', 'sex', 'loveChance'];
 	MICROBIOS_ARRAY = [];
 	
 	CANVAS.height = $(document).height();
 	CANVAS.width = $(document).width();
 	
 	MICROBIOS[++ID] = new Microbio(ID,
-									1, //colonyId
+									COLONY_ID, //colonyId
 									10, //size
 									5, //movementFrequency
 									10, //posX
@@ -24,15 +25,39 @@ $(function() {
 									10, //attack
 									10, //resistance
 									10, //currentResistance
-									3, //procreationRate
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
 									1.5, //procreationRandomnessRate
 									1, //regeneration
 									100, //averageAge
-									CURRENT_TIME //birthTime
+									CURRENT_TIME, //birthTime
+									'F', //sex
+									10 //loveChance
+								);
+
+	MICROBIOS[++ID] = new Microbio(ID,
+									COLONY_ID, //colonyId
+									10, //size
+									5, //movementFrequency
+									10, //posX
+									10, //posY
+									10, //movementRange
+									10, //agressiveness
+									10, //attack
+									10, //resistance
+									10, //currentResistance
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
+									1.5, //procreationRandomnessRate
+									1, //regeneration
+									100, //averageAge
+									CURRENT_TIME, //birthTime
+									'M', //sex
+									10 //loveChance
 								);
 								
 	MICROBIOS[++ID] = new Microbio(ID, 
-									2, //colonyId
+									++COLONY_ID, //colonyId
 									10, //size
 									5, //movementFrequency
 									CANVAS.width - 10, //posX
@@ -42,15 +67,39 @@ $(function() {
 									10, //attack
 									10, //resistance
 									10, //currentResistance
-									3, //procreationRate
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
 									1.5, //procreationRandomnessRate
 									1, //regeneration
 									100, //averageAge
-									CURRENT_TIME //birthTime
+									CURRENT_TIME, //birthTime
+									'F', //sex
+									10 //loveChance
 								);
 
 	MICROBIOS[++ID] = new Microbio(ID, 
-									3, //colonyId
+									COLONY_ID, //colonyId
+									10, //size
+									5, //movementFrequency
+									CANVAS.width - 10, //posX
+									CANVAS.height - 10, //posY
+									10, //movementRange
+									10, //agressiveness
+									10, //attack
+									10, //resistance
+									10, //currentResistance
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
+									1.5, //procreationRandomnessRate
+									1, //regeneration
+									100, //averageAge
+									CURRENT_TIME, //birthTime
+									'M', //sex
+									10 //loveChance
+								);
+
+	MICROBIOS[++ID] = new Microbio(ID, 
+									++COLONY_ID, //colonyId
 									10, //size
 									5, //movementFrequency
 									10, //posX
@@ -60,15 +109,39 @@ $(function() {
 									10, //attack
 									10, //resistance
 									10, //currentResistance
-									3, //procreationRate
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
 									1.5, //procreationRandomnessRate
 									1, //regeneration
 									100, //averageAge
-									CURRENT_TIME //birthTime
+									CURRENT_TIME, //birthTime
+									'F', //sex
+									10 //loveChance
+								);
+
+	MICROBIOS[++ID] = new Microbio(ID, 
+									COLONY_ID, //colonyId
+									10, //size
+									5, //movementFrequency
+									10, //posX
+									CANVAS.height - 10, //posY
+									10, //movementRange
+									10, //agressiveness
+									10, //attack
+									10, //resistance
+									10, //currentResistance
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
+									1.5, //procreationRandomnessRate
+									1, //regeneration
+									100, //averageAge
+									CURRENT_TIME, //birthTime
+									'M', //sex
+									10 //loveChance
 								);
 								
 	MICROBIOS[++ID] = new Microbio(ID, 
-									4, //colonyId
+									++COLONY_ID, //colonyId
 									10, //size
 									5, //movementFrequency
 									CANVAS.width - 10, //posX
@@ -78,15 +151,39 @@ $(function() {
 									10, //attack
 									10, //resistance
 									10, //currentResistance
-									3, //procreationRate
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
 									1.5, //procreationRandomnessRate
 									1, //regeneration
 									100, //averageAge
-									CURRENT_TIME //birthTime
+									CURRENT_TIME, //birthTime
+									'F', //sex
+									10 //loveChance
 								);
 
 	MICROBIOS[++ID] = new Microbio(ID, 
-									5, //colonyId
+									COLONY_ID, //colonyId
+									10, //size
+									5, //movementFrequency
+									CANVAS.width - 10, //posX
+									10, //posY
+									10, //movementRange
+									10, //agressiveness
+									10, //attack
+									10, //resistance
+									10, //currentResistance
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
+									1.5, //procreationRandomnessRate
+									1, //regeneration
+									100, //averageAge
+									CURRENT_TIME, //birthTime
+									'M', //sex
+									10 //loveChance
+								);
+
+	MICROBIOS[++ID] = new Microbio(ID, 
+									++COLONY_ID, //colonyId
 									10, //size
 									5, //movementFrequency
 									CANVAS.width / 2, //posX
@@ -96,11 +193,35 @@ $(function() {
 									10, //attack
 									10, //resistance
 									10, //currentResistance
-									3, //procreationRate
+									3, //ownProcreationRate
+									3, //coupleProcreationRate
 									1.5, //procreationRandomnessRate
 									1, //regeneration
 									100, //averageAge
-									CURRENT_TIME //birthTime
+									CURRENT_TIME, //birthTime
+									'F', //sex
+									10 //loveChance
+								);
+
+	MICROBIOS[++ID] = new Microbio(ID, 
+									COLONY_ID, //colonyId
+									10, //size
+									5, //movementFrequency
+									CANVAS.width / 2, //posX
+									CANVAS.height / 2, //posY
+									10, //movementRange
+									10, //agressiveness
+									10, //attack
+									10, //resistance
+									10, //currentResistance
+									2, //ownProcreationRate
+									3, //coupleProcreationRate
+									1.5, //procreationRandomnessRate
+									1, //regeneration
+									100, //averageAge
+									CURRENT_TIME, //birthTime
+									'M', //sex
+									10 //loveChance
 								);
 	
 	setInterval(function() {
@@ -147,16 +268,100 @@ function verifyCollisions() {
 
 			if (microbio1.colonyId != microbio2.colonyId) {
 				if (isCollision(microbio1, microbio2)) {
-					var attackChance = Math.floor((Math.random() * 100));
+					var attackChance = Math.floor((Math.random() * 100)),
+						loveChance = Math.floor((Math.random() * 100));
 					
 					if (microbio1.agressiveness > attackChance
 						|| microbio2.agressiveness > attackChance) {
 						
 						calculateDamage(microbio1, microbio2);
 					}
+
+					if (
+						(microbio1.loveChance > loveChance
+						|| microbio2.loveChance > loveChance)
+						&& microbio1.sex != microbio2.sex
+					) {
+						
+						coupleProcreate(microbio1, microbio2);
+					}
 				}
 			}
 		}
+	}
+}
+
+function coupleProcreate(microbio1, microbio2) {
+	var idDIff = Math.abs(microbio1.id - microbio2.id),
+		coupleProcreationChance = Math.floor((Math.random() * 100) + 1);
+
+	if (microbio.coupleProcreationRate <= coupleProcreationChance) {
+		return;
+	}
+
+	if (idDIff <= 5 && microbio1.colonyId === microbio2.colonyId) {
+		var spawn = new Microbio(
+			++ID,
+			microbio1.colonyId, 
+			null, null,
+			microbio1.posX + microbio1.size, 
+			microbio1.posY + microbio1.size, 
+			null, null, null, null, null, null, null,
+			microbio1.procreationRandomnessRate - 0.4,
+			null, null, CURRENT_TIME, null
+		);
+
+		PROCREATION_VARIATORS.forEach(function(variator) {
+			spawn[variator] = microbio1[variator];
+
+			spawn[variator] -= (Math.random() * microbio.procreationRandomnessRate);
+
+			if (spawn[variator] < 0) {
+				spawn[variator] = 0;
+			}
+
+			if (Math.floor((Math.random() * 2) + 1) == 2) {
+				if (variator == 'sex') {
+					spawn[variator] = 'F';
+				}
+			} else {
+				if (variator == 'sex') {
+					spawn[variator] = 'M';
+				}
+			}
+		});
+
+		MICROBIOS[spawn.id] = spawn;
+	} else {
+		var spawn = new Microbio(
+			++ID,
+			++COLONY_ID, 
+			null, null,
+			microbio1.posX + microbio1.size, 
+			microbio1.posY + microbio1.size, 
+			null, null, null, null, null, null, null,
+			microbio1.procreationRandomnessRate + 0.2,
+			null, null, CURRENT_TIME, null
+		);
+
+		COLORS.push('#'+averageRGB(COLORS[microbio1.colonyId - 1].replace('#', ''), COLORS[microbio2.colonyId - 1].replace('#', '')));
+
+		PROCREATION_VARIATORS.forEach(function(variator) {
+			spawn[variator] = (microbio1[variator] + microbio1.procreationRandomnessRate) / 2;
+			spawn[variator] += (microbio2[variator] + microbio2.procreationRandomnessRate) / 2;
+
+			if (Math.floor((Math.random() * 2) + 1) == 2) {
+				if (variator == 'sex') {
+					spawn[variator] = 'F';
+				}
+			} else {
+				if (variator == 'sex') {
+					spawn[variator] = 'M';
+				}
+			}
+		});
+
+		MICROBIOS[spawn.id] = spawn;
 	}
 }
 
@@ -202,18 +407,18 @@ function procreateMicrobio(microbio) {
 		return;
 	}
 
-	var procreationChance = Math.floor((Math.random() * 100) + 1);
+	var ownProcreationChance = Math.floor((Math.random() * 100) + 1);
 
-	if (microbio.procreationRate >= procreationChance) {
+	if (microbio.ownProcreationRate >= ownProcreationChance) {
 		var spawn = new Microbio(
 			++ID,
 			microbio.colonyId, 
 			null, null,
 			microbio.posX + microbio.size, 
 			microbio.posY + microbio.size, 
-			null, null, null, null, null, null,
+			null, null, null, null, null, null, null,
 			microbio.procreationRandomnessRate,
-			null, null, CURRENT_TIME
+			null, null, CURRENT_TIME, null
 		);
 
 		PROCREATION_VARIATORS.forEach(function(variator) {
@@ -221,12 +426,20 @@ function procreateMicrobio(microbio) {
 
 			if (Math.floor((Math.random() * 2) + 1) == 2) {
 				if (Math.floor((Math.random() * 2) + 1) == 2) {
+					if (variator == 'sex') {
+						spawn[variator] = 'F';
+					}
+
 					spawn[variator] -= (Math.random() * microbio.procreationRandomnessRate);
 
 					if (spawn[variator] < 0) {
 						spawn[variator] = 0;
 					}
 				} else {
+					if (variator == 'sex') {
+						spawn[variator] = 'M';
+					}
+
 					spawn[variator] += (Math.random() * microbio.procreationRandomnessRate);
 				}
 			}
@@ -287,3 +500,31 @@ function getValues(object) {
 	
 	return values;
 }
+
+var averageRGB = (function () {
+
+  // Keep helper stuff in closures
+  var reSegment = /[\da-z]{2}/gi;
+
+  // If speed matters, put these in for loop below
+  function dec2hex(v) {return v.toString(16);}
+  function hex2dec(v) {return parseInt(v,16);}
+
+  return function (c1, c2) {
+
+    // Split into parts
+    var b1 = c1.match(reSegment);
+    var b2 = c2.match(reSegment);
+    var t, c = [];
+
+    // Average each set of hex numbers going via dec
+    // always rounds down
+    for (var i=b1.length; i;) {
+      t = dec2hex( (hex2dec(b1[--i]) + hex2dec(b2[i])) >> 1 );
+
+      // Add leading zero if only one character
+      c[i] = t.length == 2? '' + t : '0' + t; 
+    }
+    return  c.join('');
+  }
+}());

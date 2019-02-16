@@ -29,7 +29,7 @@
 	 * @since 0.2.0
 	 */
 	this.tick = () => {
-		if (++this.age >= averageAge) {
+		if (++this.age >= this.averageAge) {
 			return this.die();
 		}
 
@@ -69,16 +69,16 @@
 	this.randomMove = () => {
 		var willMoveX = Utils.verifyChance(this.movementFrequency),
 			willMoveY = Utils.verifyChance(this.movementFrequency),
-			willGoFrontX = Utils.verifyChance(50),
-			willGoFrontY = Utils.verifyChance(50),
+			willGoForwardX = Utils.verifyChance(50),
+			willGoForwardY = Utils.verifyChance(50),
 			movementQuantityX = Utils.getRandomNumber(1, this.movementRange),
 			movementQuantityY = Utils.getRandomNumber(1, this.movementRange);
 		
 		if (willMoveX) {
-			if (willGoFrontX) {
-				this.posX -= movementQuantityX;
-			} else {
+			if (willGoForwardX) {
 				this.posX += movementQuantityX;
+			} else {
+				this.posX -= movementQuantityX;
 			}
 			
 			if (this.posX <= 0) {
@@ -89,10 +89,10 @@
 		}
 		
 		if (willMoveY) {
-			if (willGoFrontY) {
-				this.posY -= movementQuantityY;
-			} else {
+			if (willGoForwardY) {
 				this.posY += movementQuantityY;
+			} else {
+				this.posY -= movementQuantityY;
 			}
 			
 			if (this.posY <= 0) {
@@ -115,7 +115,7 @@
 			return;
 		}
 
-		let willReproduce = Utils.verifyChance(ownProcreationRate),
+		let willReproduce = Utils.verifyChance(this.ownProcreationRate),
 			newBorn;
 
 		if (!willReproduce) {
@@ -132,7 +132,9 @@
 			this.procreationRandomnessRate
 		);
 
-		PROCREATION_VARIATORS.forEach(function(variator) {
+		newBorn.sex = Utils.verifyChance(50) ? 'M' : 'F';
+
+		PROCREATION_VARIATORS.forEach(variator => {
 			let willVariate = Utils.verifyChance(50),
 				willBePositiveVariation = Utils.getRandomNumber(1, 2);
 
@@ -140,11 +142,6 @@
 
 			if (!willVariate) {
 				return;
-			}
-
-			if (variator === 'sex') {
-				let willBeMasculine = Utils.verifyChance(50);
-				newBorn[variator] = willBeMasculine ? 'M' : 'F';
 			}
 
 			if (willBePositiveVariation) {

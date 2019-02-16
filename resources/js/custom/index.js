@@ -1,270 +1,75 @@
-$(function() {
-	CANVAS = $('canvas')[0];
-	CTX = CANVAS.getContext('2d');
-	MICROBIOS = {};
-	COLORS = ['#FF0000', '#00FF00', '#0000FF', '#000000', '#CCCCCC'];
-	ID = 0;
-	COLONY_ID = 1;
-	MAX_POPULATION = 500;
-	CURRENT_TIME = 0;
-	TICK_RATE = 30;
+let CANVAS,
+	CTX,
+	MICROBIOS = {},
+	COLORS = ['#FF0000', '#00FF00', '#0000FF', '#000000', '#CCCCCC'],
+	ID = 1,
+	COLONY_ID = 1,
+	MAX_POPULATION = 500,
+	CURRENT_TIME = 0,
+	TICK_RATE = 30,
 	PROCREATION_VARIATORS = ['size', 'movementFrequency', 'movementRange', 'agressiveness', 'attack', 'resistance', 'ownProcreationRate', 'coupleProcreationRate', 'regeneration', 'averageAge', 'sex', 'loveChance'];
-	MICROBIOS_ARRAY = [];
+
+/**
+ * App initialization
+ * 
+ * @author mauricio.araldi
+ * @since 0.2.0
+ */
+window.onload = () => {
+	let body = document.body,
+		html = document.documentElement;
+
+	CANVAS = document.querySelector('canvas');
+	CTX = CANVAS.getContext('2d');
+
+	CANVAS.height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+	CANVAS.width = Math.max(body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html.offsetWidth);
 	
-	CANVAS.height = $(document).height();
-	CANVAS.width = $(document).width();
-	
-	MICROBIOS[++ID] = new Microbio(ID,
-									COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									10, //posX
-									10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'F', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID,
-									COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									10, //posX
-									10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'M', //sex
-									10 //loveChance
-								);
-								
-	MICROBIOS[++ID] = new Microbio(ID, 
-									++COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									CANVAS.width - 10, //posX
-									CANVAS.height - 10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'F', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID, 
-									COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									CANVAS.width - 10, //posX
-									CANVAS.height - 10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'M', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID, 
-									++COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									10, //posX
-									CANVAS.height - 10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'F', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID, 
-									COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									10, //posX
-									CANVAS.height - 10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'M', //sex
-									10 //loveChance
-								);
-								
-	MICROBIOS[++ID] = new Microbio(ID, 
-									++COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									CANVAS.width - 10, //posX
-									10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'F', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID, 
-									COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									CANVAS.width - 10, //posX
-									10, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'M', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID, 
-									++COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									CANVAS.width / 2, //posX
-									CANVAS.height / 2, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									3, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'F', //sex
-									10 //loveChance
-								);
-
-	MICROBIOS[++ID] = new Microbio(ID, 
-									COLONY_ID, //colonyId
-									10, //size
-									5, //movementFrequency
-									CANVAS.width / 2, //posX
-									CANVAS.height / 2, //posY
-									10, //movementRange
-									10, //agressiveness
-									10, //attack
-									10, //resistance
-									10, //currentResistance
-									2, //ownProcreationRate
-									3, //coupleProcreationRate
-									1.5, //procreationRandomnessRate
-									1, //regeneration
-									100, //averageAge
-									CURRENT_TIME, //birthTime
-									'M', //sex
-									10 //loveChance
-								);
-	
-	setInterval(function() {
-		tick();
+	setInterval(() => {
+		tick(Object.values(MICROBIOS));
+		CURRENT_TIME++;
 	}, TICK_RATE);
-});
 
-function tick() {
-	MICROBIOS_ARRAY = getValues(MICROBIOS);
+	initialMicrobioLoad();
+};
+
+/**
+ * Ticks the animation
+ * 
+ * @author mauricio.araldi
+ * @since 0.2.0
+ */
+function tick(microbios) {
+	let i;
 
 	CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
 
-	var i = MICROBIOS_ARRAY.length;
-	while (i--) {
-		var microbio = MICROBIOS_ARRAY[i];
+	i = microbios.length;
 
-		verifyMicrobioAge(microbio);
-		procreateMicrobio(microbio);
-		regenerateMicrobio(microbio);
-		moveMicrobio(microbio);
+	if (!i) {
+		return;
+	}
+
+	while (i--) {
+		let microbio = microbios[i];
+
+		microbio.tick();
+
 		drawMicrobio(microbio);
 	}
 	
-	verifyCollisions();
-	
-	CURRENT_TIME += 1;
-}
-
-function verifyMicrobioAge(microbio) {
-	if ((CURRENT_TIME - microbio.birthTime) > microbio.averageAge) {
-		delete MICROBIOS[microbio.id];
-	}
+	// verifyCollisions(microbios);
 }
 
 function verifyCollisions() {
-	var i1 = MICROBIOS_ARRAY.length;
+	var i1 = Object.values(MICROBIOS).length;
 
 	while (i1--) {
-		var microbio1 = MICROBIOS_ARRAY[i1],
+		var microbio1 = Object.values(MICROBIOS)[i1],
 			i2 = i1;
 
 		while (i2--) {
-			var microbio2 = MICROBIOS_ARRAY[i2];
+			var microbio2 = Object.values(MICROBIOS)[i2];
 
 			if (microbio1.colonyId != microbio2.colonyId) {
 				if (isCollision(microbio1, microbio2)) {
@@ -394,115 +199,12 @@ function isCollision(microbio1, microbio2) {
 	return false;
 }
 
-function regenerateMicrobio(microbio) {
-	microbio.currentResistance += microbio.regeneration;
-
-	if (microbio.currentResistance > microbio.resistance) {
-		microbio.currentResistance = microbio.resistance;
-	}
-}
-
-function procreateMicrobio(microbio) {
-	if (MICROBIOS_ARRAY.length >= MAX_POPULATION) {
-		return;
-	}
-
-	var ownProcreationChance = Math.floor((Math.random() * 100) + 1);
-
-	if (microbio.ownProcreationRate >= ownProcreationChance) {
-		var spawn = new Microbio(
-			++ID,
-			microbio.colonyId, 
-			null, null,
-			microbio.posX + microbio.size, 
-			microbio.posY + microbio.size, 
-			null, null, null, null, null, null, null,
-			microbio.procreationRandomnessRate,
-			null, null, CURRENT_TIME, null
-		);
-
-		PROCREATION_VARIATORS.forEach(function(variator) {
-			spawn[variator] = microbio[variator];
-
-			if (Math.floor((Math.random() * 2) + 1) == 2) {
-				if (Math.floor((Math.random() * 2) + 1) == 2) {
-					if (variator == 'sex') {
-						spawn[variator] = 'F';
-					}
-
-					spawn[variator] -= (Math.random() * microbio.procreationRandomnessRate);
-
-					if (spawn[variator] < 0) {
-						spawn[variator] = 0;
-					}
-				} else {
-					if (variator == 'sex') {
-						spawn[variator] = 'M';
-					}
-
-					spawn[variator] += (Math.random() * microbio.procreationRandomnessRate);
-				}
-			}
-		});
-
-		MICROBIOS[spawn.id] = spawn;
-	}
-}
-
 function drawMicrobio(microbio) {
 	CTX.fillStyle = COLORS[microbio.colonyId-1];
 	CTX.fillRect( microbio.posX, microbio.posY, microbio.size, microbio.size );
 }
 
-function moveMicrobio(microbio) {
-	var movementChanceX = Math.floor((Math.random() * microbio.movementFrequency)),
-		movementChanceY = Math.floor((Math.random() * microbio.movementFrequency)),
-		rearFrontX = Math.floor((Math.random() * 2) + 1),
-		rearFrontY = Math.floor((Math.random() * 2) + 1),
-		movementQuantityX = Math.floor((Math.random() * microbio.movementRange) + 1),
-		movementQuantityY = Math.floor((Math.random() * microbio.movementRange) + 1);
-	
-	if (movementChanceX) {
-		if (rearFrontX == 1) {
-			microbio.posX -= movementQuantityX;
-		} else {
-			microbio.posX += movementQuantityX;
-		}
-		
-		if (microbio.posX <= 0) {
-			microbio.posX = 0;
-		} else if ((microbio.posX + microbio.size) >= CANVAS.width) {
-			microbio.posX = CANVAS.width - microbio.size;
-		}
-	}
-	
-	if (movementChanceY) {
-		if (rearFrontY == 1) {
-			microbio.posY -= movementQuantityY;
-		} else {
-			microbio.posY += movementQuantityY;
-		}
-		
-		if (microbio.posY <= 0) {
-			microbio.posY = 0;
-		} else if ((microbio.posY + microbio.size) >= CANVAS.height) {
-			microbio.posY = CANVAS.height - microbio.size;
-		}
-	}
-}
-
-function getValues(object) {
-	var values = [];
-	
-	for (var k in object) {
-		values.push(object[k]);
-	}
-	
-	return values;
-}
-
-var averageRGB = (function () {
-
+function averageRGB() {
   // Keep helper stuff in closures
   var reSegment = /[\da-z]{2}/gi;
 
@@ -527,4 +229,4 @@ var averageRGB = (function () {
     }
     return  c.join('');
   }
-}());
+}

@@ -1,4 +1,4 @@
-﻿function Microbio(id = ++ID, colonyId, size, movementFrequency, posX, posY, movementRange,
+﻿function Microbio(id, colonyId, size, movementFrequency, posX, posY, movementRange,
 	agressiveness, attack, resistance, currentResistance, ownProcreationRate,
 	coupleProcreationRate, procreationRandomnessRate, regeneration, averageAge,
 	age = 0, sex, loveChance) {
@@ -28,14 +28,17 @@
 	 * @author mauricio.araldi
 	 * @since 0.2.0
 	 */
-	this.tick = () => {
+	this.tick = (tryToReproduce = true) => {
 		if (++this.age >= this.averageAge) {
 			return this.die();
 		}
 
 		this.regenerate();
 		this.randomMove();
-		this.selfReproduce();
+
+		if (tryToReproduce) {
+			return this.reproduce();
+		}
 	};
 
 	/**
@@ -45,7 +48,7 @@
 	 * @since 0.2.0
 	 */
 	this.die = () => {
-		delete MICROBIOS[this.id];
+		delete SCENE_OBJECTS[this.id];
 	};
 
 	/**
@@ -106,37 +109,53 @@
 	/**
 	 * Verifies the chance and executes the self reproduction
 	 * of a Microbio
+	 *
+	 * @param {Microbio} partner Another microbio who is reproducing together with this one
+	 * @return {Microbio} The new born microbio
 	 * 
 	 * @author mauricio.araldi
 	 * @since 0.2.0
 	 */
-	this.selfReproduce = () => {
-		if (Object.values(MICROBIOS).length >= MAX_POPULATION) {
-			return;
-		}
-
-		let willReproduce = Utils.verifyChance(this.ownProcreationRate),
+	this.reproduce = (partner) => {
+		let willReproduce = Utils.verifyChance(this.coupleProcreationRate),
+			parentsTooClose = false,
 			newBorn;
+
+		// Try again if there is a partner
+		if (partner && !willReproduce) {
+			willReproduce = Utils.verifyChance(partner.coupleProcreationRate);
+		}
 
 		if (!willReproduce) {
 			return;
 		}
 
-		newBorn = new Microbio(
-			++ID,
-			this.colonyId, 
-			null, null,
-			this.posX + this.size, 
-			this.posY + this.size, 
-			null, null, null, null, null, null, null,
-			this.procreationRandomnessRate
-		);
+		newBorn = new Microbio();
 
+		newBorn.colonyId = this.colonyId;
+		newBorn.posX = this.posX + this.size;
+		newBorn.posY = this.posY + this.size;
 		newBorn.sex = Utils.verifyChance(50) ? 'M' : 'F';
 
+		if (partner) {
+			let idDiff = Math.abs(this.id - partner.id);
+
+			parentsTooClose = idDiff < 10 && this.colonyId === partner.colonyId;
+
+			newBorn.procreationRandomnessRate = (this.procreationRandomnessRate / 2) + (partner.procreationRandomnessRate / 2);
+
+			if (parentsTooClose) {
+				 newBorn.procreationRandomnessRate -= 0.3;
+			} else {
+				newBorn.procreationRandomnessRate += 0.3;
+			}
+		} else {
+			newBorn.procreationRandomnessRate = this.procreationRandomnessRate;
+		}
+
 		PROCREATION_VARIATORS.forEach(variator => {
-			let willVariate = Utils.verifyChance(50),
-				willBePositiveVariation = Utils.getRandomNumber(1, 2);
+			let willVariate = partner ? true : Utils.verifyChance(50),
+				willBePositiveVariation = partner ? parentsTooClose : Utils.verifyChance(50);
 
 			newBorn[variator] = this[variator];
 
@@ -145,9 +164,19 @@
 			}
 
 			if (willBePositiveVariation) {
-				newBorn[variator] += Math.random() * this.procreationRandomnessRate;
+				if (partner) {
+					newBorn[variator] = (this[variator] + this.procreationRandomnessRate) / 2;
+					newBorn[variator] += (partner[variator] + partner.procreationRandomnessRate) / 2;
+				} else {
+					newBorn[variator] += Math.random() * this.procreationRandomnessRate;
+				}
 			} else {
-				newBorn[variator] -= Math.random() * this.procreationRandomnessRate;
+				if (partner) {
+					newBorn[variator] = (this[variator] - this.procreationRandomnessRate) / 2;
+					newBorn[variator] += (partner[variator] - partner.procreationRandomnessRate) / 2;
+				} else {
+					newBorn[variator] -= Math.random() * this.procreationRandomnessRate;
+				}
 
 				if (newBorn[variator] < 0) {
 					newBorn[variator] = 0;
@@ -155,6 +184,11 @@
 			}
 		});
 
-		MICROBIOS[newBorn.id] = newBorn;
+		if (partner && this.colonyId != partner.colonyId) {
+			newBorn.colonyId = ++COLONY_ID;
+			COLORS.push(mergeColors(COLORS[this.colonyId - 1], COLORS[partner.colonyId - 1]));
+		}
+
+		return newBorn;
 	};
 }

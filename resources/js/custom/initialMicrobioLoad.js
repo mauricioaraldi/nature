@@ -7,7 +7,7 @@ initialMicrobioLoad = () => {
 	for (let i = ID; i <= 10; i = ++ID) {
 		COLONY_ID = Math.ceil(i/2);
 
-		MICROBIOS[i] = new Microbio(
+		SCENE_OBJECTS[i] = new Microbio(
 			i, //Id
 			COLONY_ID, //colonyId
 			10, //size

@@ -1,13 +1,12 @@
 let CANVAS,
 	CTX,
-	MICROBIOS = {},
+	TICKER,
+	SCENE_OBJECTS = {},
 	COLORS = ['#FF0000', '#00FF00', '#0000FF', '#000000', '#CCCCCC'],
 	ID = 1,
 	COLONY_ID = 1,
-	MAX_POPULATION = 100,
-	CURRENT_TIME = 0,
+	MAX_SCENE_OBJECTS = 100,
 	TICK_RATE = 25,
-	TICKER,
 	PROCREATION_VARIATORS = ['size', 'movementFrequency', 'movementRange',
 		'agressiveness', 'attack', 'resistance', 'ownProcreationRate', 'coupleProcreationRate',
 		'regeneration', 'averageAge', 'loveChance'];
@@ -27,13 +26,12 @@ window.onload = () => {
 
 	CANVAS.height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
 	CANVAS.width = Math.max(body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html.offsetWidth);
-	
-	TICKER = setInterval(() => {
-		tick(Object.values(MICROBIOS));
-		CURRENT_TIME++;
-	}, TICK_RATE);
 
 	initialMicrobioLoad();
+	
+	TICKER = setInterval(() => {
+		tick(Object.values(SCENE_OBJECTS));
+	}, TICK_RATE);
 };
 
 /**
@@ -43,9 +41,14 @@ window.onload = () => {
  * @since 0.2.0
  */
 function tick(microbios) {
-	let i,
-		lastColonyAlive = null,
-		areTwoColoniesAlive = false;
+	let lastColonyAlive = null,
+		areTwoColoniesAlive = false,
+		isStageFull = false,
+		i;
+
+	if (microbios.length >= MAX_SCENE_OBJECTS) {
+		isStageFull = true;
+	}
 
 	CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
 
@@ -66,7 +69,13 @@ function tick(microbios) {
 			areTwoColoniesAlive = true;
 		}
 
-		microbio.tick();
+		let newBorn = microbio.tick(!isStageFull);
+
+		if (newBorn) {
+			newBorn.id = ++ID;
+			SCENE_OBJECTS[ID] = newBorn;
+		}
+
 		drawMicrobio(microbio);
 	}
 
@@ -118,71 +127,15 @@ function verifyCollisions(microbios) {
 				|| microbio2.loveChance > loveChance)
 				&& microbio1.sex != microbio2.sex
 			) {
-				coupleReproduce(microbio1, microbio2);
+				let newBorn = microbio1.reproduce(microbio2);
+
+				if (newBorn) {
+					newBorn.id = ++ID;
+					SCENE_OBJECTS[ID] = newBorn;
+				}
 			}
 		}
 	}
-}
-
-/**
- * Occurs when two microbios of opposite sex match, a new spawn
- * with better genes may be born
- * 
- * @author mauricio.araldi
- * @since 0.2.0
- * 
- * @param {Microbio} microbio1 One of the microbios of the couple
- * @param {Microbio} microbio2 One of the microbios of the couple
- */
-function coupleReproduce(microbio1, microbio2) {
-	let idDIff = Math.abs(microbio1.id - microbio2.id),
-		coupleProcreationChance = Utils.getRandomNumber(1, 100),
-		spawn;
-
-	if (microbio1.coupleProcreationRate <= coupleProcreationChance
-		|| microbio2.coupleProcreationRate <= coupleProcreationChance) {
-		return;
-	}
-
-	spawn = new Microbio(
-		++ID,
-		microbio1.colonyId, 
-		null, null,
-		microbio1.posX + microbio1.size, 
-		microbio1.posY + microbio1.size, 
-		null, null, null, null, null, null, null,
-		microbio1.procreationRandomnessRate - 0.4
-	);
-
-	spawn.sex = Utils.verifyChance(50) ? 'F' : 'M';
-
-	MICROBIOS[spawn.id] = spawn;
-
-	if (idDIff <= 10 && microbio1.colonyId === microbio2.colonyId) {
-		PROCREATION_VARIATORS.forEach(variator => {
-			spawn[variator] = microbio1[variator];
-
-			spawn[variator] -= (Math.random() * microbio1.procreationRandomnessRate);
-
-			if (spawn[variator] < 0) {
-				spawn[variator] = 0;
-			}
-		});
-
-		return;
-	}
-
-	spawn.procreationRandomnessRate = microbio1.procreationRandomnessRate + 0.2;
-
-	if (microbio1.colonyId != microbio2.colonyId) {
-		spawn.colonyId = ++COLONY_ID;
-		COLORS.push(mergeColors(COLORS[microbio1.colonyId - 1], COLORS[microbio2.colonyId - 1]));
-	}
-
-	PROCREATION_VARIATORS.forEach(function(variator) {
-		spawn[variator] = (microbio1[variator] + microbio1.procreationRandomnessRate) / 2;
-		spawn[variator] += (microbio2[variator] + microbio2.procreationRandomnessRate) / 2;
-	});
 }
 
 /**

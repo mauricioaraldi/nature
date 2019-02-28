@@ -1,7 +1,7 @@
 ﻿function Microbio(id, colonyId, size, movementFrequency, posX, posY, movementRange,
 	agressiveness, attack, resistance, currentResistance, ownProcreationRate,
 	coupleProcreationRate, procreationRandomnessRate, regeneration, averageAge,
-	age = 0, sex, loveChance) {
+	age = 0, sex) {
 	this.id = id;
 	this.colonyId = colonyId;
 	this.size = size;
@@ -20,7 +20,6 @@
 	this.averageAge = averageAge;
 	this.age = age;
 	this.sex = sex;
-	this.loveChance = loveChance;
 
 	/**
 	 * Function that happens to this model every tick
@@ -117,13 +116,15 @@
 	 * @since 0.2.0
 	 */
 	this.reproduce = (partner) => {
-		let willReproduce = Utils.verifyChance(this.coupleProcreationRate),
-			parentsTooClose = false,
+		let parentsTooClose = false,
+			willReproduce,
 			newBorn;
 
 		// Try again if there is a partner
-		if (partner && !willReproduce) {
-			willReproduce = Utils.verifyChance(partner.coupleProcreationRate);
+		if (partner) {
+			willReproduce = Utils.verifyChance(this.coupleProcreationRate) && Utils.verifyChance(partner.coupleProcreationRate);
+		} else {
+			willReproduce = Utils.verifyChance(this.ownProcreationRate);
 		}
 
 		if (!willReproduce) {
@@ -164,6 +165,7 @@
 			}
 
 			if (willBePositiveVariation) {
+				/* Rule 4 */
 				if (partner) {
 					newBorn[variator] = (this[variator] + this.procreationRandomnessRate) / 2;
 					newBorn[variator] += (partner[variator] + partner.procreationRandomnessRate) / 2;
@@ -171,6 +173,7 @@
 					newBorn[variator] += Math.random() * this.procreationRandomnessRate;
 				}
 			} else {
+				/* Rule 4 */
 				if (partner) {
 					newBorn[variator] = (this[variator] - this.procreationRandomnessRate) / 2;
 					newBorn[variator] += (partner[variator] - partner.procreationRandomnessRate) / 2;
@@ -186,7 +189,7 @@
 
 		if (partner && this.colonyId != partner.colonyId) {
 			newBorn.colonyId = ++COLONY_ID;
-			COLORS.push(mergeColors(COLORS[this.colonyId - 1], COLORS[partner.colonyId - 1]));
+			COLORS.push(Utils.mergeColors(COLORS[this.colonyId - 1], COLORS[partner.colonyId - 1]));
 		}
 
 		return newBorn;

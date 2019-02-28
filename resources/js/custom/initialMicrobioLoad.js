@@ -19,14 +19,13 @@ initialMicrobioLoad = () => {
 			10, //attack
 			10, //resistance
 			10, //currentResistance
-			1, //ownProcreationRate
-			1, //coupleProcreationRate
+			3, //ownProcreationRate
+			3, //coupleProcreationRate
 			2, //procreationRandomnessRate
 			1, //regeneration
 			1000, //averageAge
 			0, //birthTime
-			i%2 ? 'M' : 'F', //sex
-			10 //loveChance
+			i%2 ? 'M' : 'F' //sex
 		);
 	}
 };
